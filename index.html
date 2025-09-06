@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>تحدي كأس القدرات العامة</title>
+  <style>
+    :root{
+      --main:#2c3e50;      /* أزرق داكن */
+      --accent:#27ae60;    /* أخضر */
+      --gold:#f39c12;      /* ذهبي */
+      --muted:#73808c;     /* نص ثانوي */
+      --bg:#f6f7fb;        /* خلفية الصفحة */
+      --card:#ffffff;      /* خلفية البطاقات */
+      --border:#e9eef5;    /* حدود خفيفة */
+    }
+
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Tahoma, Arial, sans-serif;background:var(--bg);color:#1f2937}
+    a{color:inherit;text-decoration:none}
+    img{max-width:100%;display:block}
+
+    /* ناف بار بسيط */
+    .topbar{
+      position:sticky;top:0;z-index:50;
+      background:#fff;border-bottom:1px solid var(--border);
+      backdrop-filter:blur(6px);
+    }
+    .topbar .wrap{max-width:1100px;margin:0 auto;display:flex;gap:12px;align-items:center;justify-content:space-between;padding:8px 16px}
+    .brand{display:flex;align-items:center;gap:10px}
+    .brand-logo{width:32px;height:32px;border-radius:6px;background:#eef2f7;border:1px solid var(--border);background-size:cover;background-position:center}
+    .brand-name{font-weight:700;color:var(--main)}
+    .nav{display:flex;gap:10px;font-size:14px;color:#374151}
+    .nav a{padding:6px 10px;border-radius:8px}
+    .nav a:hover{background:#f1f5f9}
+
+    .container{max-width:1100px;margin:16px auto;padding:0 16px}
+
+    /* الهيدر الرئيسي */
+    header{
+      background:linear-gradient(135deg,var(--accent),#179450);
+      color:#fff;border-radius:16px;padding:16px;
+      display:grid;grid-template-columns:1.2fr 1fr 1.2fr;gap:16px;
+      align-items:stretch;box-shadow:0 4px 18px rgba(0,0,0,.06)
+    }
+    .h-left,.h-center,.h-right{display:flex;gap:10px}
+    .h-left{align-items:center}
+    .school-badge{display:flex;gap:12px;align-items:center}
+    .school-logo{
+      width:72px;height:72px;border-radius:10px;background:#eef2f7;border:2px solid rgba(255,255,255,.5);
+      background-size:cover;background-position:center;overflow:hidden
+    }
+    .school-info .name{font-weight:800;font-size:18px;line-height:1.3}
+    .school-info .year{opacity:.9;font-size:13px}
+
+    .h-center{flex-direction:column;align-items:center;justify-content:center;text-align:center}
+    .countdown-label{font-weight:700;opacity:.95}
+    .countdown{
+      display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:6px
+    }
+    .cd-box{
+      min-width:70px;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.35);
+      padding:8px;border-radius:12px;text-align:center
+    }
+    .cd-num{font-size:20px;font-weight:800}
+    .cd-unit{font-size:11px;opacity:.9}
+
+    .h-right{justify-content:flex-end;align-items:center}
+    .manager{
+      display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.15);
+      border:1px solid rgba(255,255,255,.35);padding:8px 10px;border-radius:12px
+    }
+    .manager-photo{width:64px;height:64px;border-radius:10px;background:#eef2f7;border:2px solid rgba(255,255,255,.5);background-size:cover;background-position:center}
+    .manager-info .title{font-weight:700}
+    .manager-info .role{font-size:12px;opacity:.9}
+
+    /* القسم الرئيسي: العنوان */
+    .hero-title{margin:18px 0 10px 0;text-align:center;color:var(--main);font-size:28px;font-weight:900}
+
+    /* أقسام المحتوى */
+    section{margin-top:18px}
+    .card{background:var(--card);border:1px solid var(--border);border-radius:14px;box-shadow:0 2px 10px rgba(0,0,0,.03);padding:14px}
+    .section-title{font-weight:800;color:var(--main);margin:0 0 10px 0;display:flex;align-items:center;gap:8px}
+    .muted{color:var(--muted)}
+
+    .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+    .grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+    @media (max-width:900px){.grid-4{grid-template-columns:repeat(2,1fr)}}
+    @media (max-width:720px){
+      header{grid-template-columns:1fr;gap:12px;text-align:center}
+      .h-right{justify-content:center}
+      .grid-2,.grid-3,.grid-4{grid-template-columns:1fr}
+    }
+
+    /* قائمة نقطية أنيقة */
+    .ul-clean{margin:0;padding-inline-start:18px}
+    .ul-clean li{margin:6px 0}
+
+    /* الخط الزمني للمراحل */
+    .timeline{position:relative;padding:8px 0}
+    .timeline::before{content:"";position:absolute;top:0;bottom:0;inset-inline-start:14px;width:3px;background:linear-gradient(var(--accent),#2ecc71);border-radius:6px}
+    .step{position:relative;margin:14px 0 14px 0;padding-inline-start:42px}
+    .step::before{
+      content:"";position:absolute;top:4px;inset-inline-start:6px;width:18px;height:18px;border-radius:50%;
+      background:var(--gold);border:3px solid #fff;box-shadow:0 0 0 3px rgba(243,156,18,.25)
+    }
+    .step .step-title{font-weight:800;color:#0f172a}
+    .step .step-desc{color:#334155;font-size:14px}
+
+    /* الجوائز */
+    .prize{display:flex;align-items:center;gap:10px;border:1px dashed var(--border);padding:10px;border-radius:12px;background:#fffdf6}
+    .prize .cup{font-size:28px}
+    .prize .name{font-weight:800}
+    .badge{display:inline-block;padding:3px 8px;border-radius:999px;font-size:12px;border:1px solid var(--border);background:#f8fafc;color:#334155}
+
+    /* اللجان */
+    .committee{padding:10px;border-radius:12px;border:1px solid var(--border);background:#fcfeff}
+    .committee h4{margin:0 0 6px 0;color:#0f172a}
+    .committee ul{margin:0;padding-inline-start:18px}
+    .committee li{margin:6px 0}
+
+    /* الأحداث */
+    .event{display:flex;justify-content:space-between;gap:10px;padding:10px;border-radius:12px;border:1px solid var(--border);background:#ffffff}
+    .event .meta{font-size:12px;color:#64748b}
+    .tag{display:inline-block;padding:2px 8px;border-radius:999px;font-size:12px;background:#eef2f7;border:1px solid var(--border);color:#334155}
+
+    /* فوتر */
+    footer{margin:20px 0 30px;background:#fff;border:1px solid var(--border);padding:12px;border-radius:12px;text-align:center;color:#475569}
+  </style>
+</head>
+<body>
+
+  <!-- شريط علوي للتنقل -->
+  <div class="topbar">
+    <div class="wrap">
+      <div class="brand">
+        <div class="brand-logo" style="background-image:url('https://i.postimg.cc/3NfbHkJk/Chat-GPT-Image-27-2025-11-03-57.png')"></div>
+        <div class="brand-name">تحدي كأس القدرات العامة</div>
+      </div>
+      <nav class="nav">
+        <a href="#about">عن المسابقة</a>
+             <a href="#about">الفرق المنافسة</a>
+        <a href="#stages">المراحل</a>
+        <a href="#prizes">الجوائز</a>
+        <a href="#teams">اللجان</a>
+        <a href="#events">الأحداث</a>
+              <a href="#events">تواصل معنا</a>
+      </nav>
+    </div>
+  </div>
+
+  <div class="container">
+    <!-- الهيدر -->
+    <header>
+      <!-- يمين: شعار + الاسم + السنة (مراعاة RTL) -->
+      <div class="h-left">
+        <div class="school-badge">
+          <!-- ❗️ عدّل رابط الشعار هنا -->
+          <div class="school-logo" style="background-image:url('https://i.postimg.cc/MHx479Wb/logo.webp')"></div>
+          <div class="school-info">
+            <div class="name">شركة مدارس الفيصلية الأهلية بجدة</div>
+            <div class="year">العام الدراسي 1447هـ</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- الوسط: العدّاد -->
+      <div class="h-center">
+        <div class="countdown-label">⏳  نهائي كأس القدرات</div>
+        <div class="countdown" id="countdown">
+          <div class="cd-box"><div class="cd-num" id="dd">--</div><div class="cd-unit">أيام</div></div>
+          <div class="cd-box"><div class="cd-num" id="hh">--</div><div class="cd-unit">ساعات</div></div>
+          <div class="cd-box"><div class="cd-num" id="mm">--</div><div class="cd-unit">دقائق</div></div>
+          <div class="cd-box"><div class="cd-num" id="ss">--</div><div class="cd-unit">ثوانٍ</div></div>
+        </div>
+        <div class="muted" style="margin-top:6px;font-size:12px"></div>
+      </div>
+
+      <!-- يسار: صورة المدير -->
+      <div class="h-right">
+        <div class="manager">
+          <!-- ❗️ عدّل رابط صورة المدير هنا -->
+          <div class="manager-photo" style="background-image:url('https://i.postimg.cc/59gh301d/image.png')"></div>
+          <div class="manager-info">
+            <div class="title">أ/ سليم عبد الغني المهنا</div>
+            <div class="role">سعادة مدير عام مدارس الفيصلية الأهلية</div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- عنوان المسابقة -->
+    <h1 class="hero-title">تحدي كأس القدرات العامة</h1>
+
+    <!-- القسم: فكرة / رؤية / رسالة / أهداف -->
+    <section id="about" class="card">
+      <h3 class="section-title">📘 عن المسابقة</h3>
+      <div class="grid-2">
+        <div class="card" style="padding:12px">
+          <h4 style="margin:0 0 6px 0">فكرة المسابقة</h4>
+          <p class="muted">مسابقة تحدي ودوري بين طلاب الصفين الثاني والثالث الثانوي في مجمع الفلاح ومجمع الرحاب، لتنمية مهارات القدرات العامة (اللفظي والكمي) بروح تنافسية راقية.</p>
+        </div>
+        <div class="card" style="padding:12px">
+          <h4 style="margin:0 0 6px 0">رؤية المسابقة</h4>
+          <p class="muted">إعداد جيل متميز في مهارات التفكير والتحليل، قادر على تحقيق نتائج متقدمة في اختبارات القدرات الوطنية.</p>
+        </div>
+      </div>
+      <div class="grid-2" style="margin-top:12px">
+        <div class="card" style="padding:12px">
+          <h4 style="margin:0 0 6px 0">رسالة المسابقة</h4>
+          <p class="muted">تقديم بيئة محفزة ومحتوى تدريبي تنافسي يدمج المتعة بالفائدة، ويُشرك الأقسام والطلاب في رحلة إنجاز ممتعة.</p>
+        </div>
+        <div class="card" style="padding:12px">
+          <h4 style="margin:0 0 6px 0">أهداف المسابقة</h4>
+          <ul class="ul-clean muted">
+            <li>رفع كفاءة الطلاب في قسمي القدرات (اللفظي والكمي).</li>
+            <li>تعزيز المنافسة الشريفة والعمل الجماعي على مستوى الفصول.</li>
+            <li>اكتشاف المواهب المتميزة ورعايتها.</li>
+            <li>تهيئة الطلاب لنتائج متميزة في الاختبارات المعيارية.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+<!-- الفرق المنافسة -->
+<section id="teams-competition" class="card">
+  <h3 class="section-title">🏅 الفرق المنافسة</h3>
+
+  <div class="teams-columns">
+    <!-- القسم الأول: مجمع الفلاح -->
+    <div class="school-section">
+      <h4>🏫 مجمع الفلاح</h4>
+
+      <!-- الصف الثاني الثانوي -->
+      <h5>الصف الثاني الثانوي</h5>
+      <div class="grid-6">
+        <div class="team-box">1/2</div>
+        <div class="team-box">2/2</div>
+        <div class="team-box">3/2</div>
+        <div class="team-box">42</div>
+        <div class="team-box">5/2</div>
+        <div class="team-box">6/2</div>
+      </div>
+
+      <!-- الصف الثالث الثانوي -->
+      <h5>الصف الثالث الثانوي</h5>
+      <div class="grid-6">
+        <div class="team-box">1/3</div>
+        <div class="team-box">2/3</div>
+        <div class="team-box">3/3</div>
+        <div class="team-box">4/3</div>
+        <div class="team-box">5/3</div>
+        <div class="team-box">6/3</div>
+      </div>
+    </div>
+
+    <!-- القسم الثاني: مجمع الرحاب -->
+    <div class="school-section">
+      <h4>🏫 مجمع الرحاب</h4>
+
+           <!-- الصف الثاني الثانوي -->
+      <h5>الصف الثاني الثانوي</h5>
+      <div class="grid-6">
+        <div class="team-box">1/2</div>
+        <div class="team-box">2/2</div>
+        <div class="team-box">3/2</div>
+        <div class="team-box">42</div>
+        <div class="team-box">5/2</div>
+        <div class="team-box">6/2</div>
+      </div>
+
+      <!-- الصف الثالث الثانوي -->
+      <h5>الصف الثالث الثانوي</h5>
+      <div class="grid-6">
+        <div class="team-box">1/3</div>
+        <div class="team-box">2/3</div>
+        <div class="team-box">3/3</div>
+        <div class="team-box">4/3</div>
+        <div class="team-box">5/3</div>
+        <div class="team-box">6/3</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CSS -->
+<style>
+.teams-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+}
+
+.school-section {
+  background: #fdfdfd;
+  border: 2px solid #eef2f7;
+  border-radius: 12px;
+  padding: 15px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
+.school-section h4 {
+  text-align: center;
+  margin-bottom: 15px;
+  color: #006c35;
+  font-size: 20px;
+}
+
+.grid-6 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.team-box {
+  background: #f1f8f6;
+  border: 2px solid #0aa85b;
+  border-radius: 10px;
+  text-align: center;
+  padding: 20px 0;
+  font-weight: bold;
+  color: #006c35;
+  font-size: 18px;
+  transition: transform 0.2s, background 0.2s;
+}
+
+.team-box:hover {
+  background: #0aa85b;
+  color: #fff;
+  transform: scale(1.05);
+  cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  .teams-columns {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
+
+   <!-- مراحل المسابقة -->
+<section id="stages" class="card">
+  <h3 class="section-title">🚩 مراحل المسابقة</h3>
+  <div class="timeline">
+
+    <div class="step">
+      <div class="step-circle">9/14</div>
+      <div class="step-title">المرحلة الأولى: (داخلية) اختيار الفرق </div>
+      <div class="step-desc">اختبار موحد -ورقي- لجميع الطلاب.</div>
+      <div class="tag">كلا المجمعين</div>
+    </div>
+
+    <div class="step">
+      <div class="step-circle">9/22</div>
+      <div class="step-title">المرحلة الثانية: (داخلية) تصفيات الفرق</div>
+      <div class="step-desc">اختبار -محوسب- لتحديد أفضل الفرق .</div>
+      <div class="tag">الفرق المختارة </div>
+    </div>
+
+    <div class="step">
+      <div class="step-circle">9/28</div>
+      <div class="step-title">المرحلة الثالثة: (داخلية) تصفيات الفرق</div>
+      <div class="step-desc">مواجهات مباشرة أمام لجنة تحكيم.</div>
+      <div class="tag">لجنة التحكيم</div>
+    </div>
+
+    <div class="step">
+      <div class="step-circle">10/5</div>
+      <div class="step-title">المرحلة الرابعة: (خارجية) البطولة النهائية</div>
+      <div class="step-desc">منافسات مباشرة بين الفرق المتأهلة.</div>
+      <div class="tag">النهائي الكبير</div>
+    </div>
+
+    <div class="step">
+      <div class="step-circle">يحدد لاحقَا</div>
+      <div class="step-title">المرحلة الخامسة: التكريم</div>
+      <div class="step-desc">تتويج الفائزين بكأس البطولة وتقديم الجوائز.</div>
+      <div class="tag">النهائي الكبير</div>
+    </div>
+
+  </div>
+</section>
+
+<style>
+.timeline {
+  position: relative;
+  padding: 20px 0;
+}
+
+.timeline::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  inset-inline-start: 30px;
+  width: 4px;
+  background: linear-gradient(var(--accent), #2ecc71);
+  border-radius: 6px;
+}
+
+.step {
+  position: relative;
+  margin: 30px 0;
+  padding-inline-start: 70px;
+}
+
+.step-circle {
+  position: absolute;
+  top: 0;
+  inset-inline-start: 0;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #fff;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-size: 14px;
+  border: 3px solid #fff;
+  box-shadow: 0 0 0 3px rgba(39, 174, 96, 0.25);
+  transition: transform 0.3s, background 0.3s;
+}
+
+.step-circle:hover {
+  transform: scale(1.15);
+  background: #2ecc71;
+}
+
+.step .step-title {
+  font-weight: 800;
+  color: #0f172a;
+  margin-bottom: 6px;
+  font-size: 16px;
+}
+
+.step .step-desc {
+  color: #334155;
+  font-size: 14px;
+  margin-bottom: 4px;
+}
+
+.tag {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  border: 1px solid var(--border);
+  background: #eef2f7;
+  color: #334155;
+  margin-top: 4px;
+}
+</style>
+
+
+    <!-- الجوائز -->
+    <section id="prizes" class="card">
+      <h3 class="section-title">🏅 الجوائز</h3>
+      <div class="grid-2">
+        <div class="prize">
+          <div class="cup">🏆</div>
+          <div>
+            <div class="name">المركز الأول</div>
+            <div class="muted">كأس البطولة • ميدالية ذهبية • مكافأة <b>1000 ريال</b></div>
+          </div>
+        </div>
+        <div class="prize">
+          <div class="cup">🥈</div>
+          <div>
+            <div class="name">المركز الثاني</div>
+            <div class="muted">ميدالية فضية • مكافأة <b>500 ريال</b></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- اللجان والفرق -->
+<section id="teams" class="card">
+  <h3 class="section-title">👥 اللجان المنظمة والفرق</h3>
+
+  <div class="grid-4">
+
+    <!-- اللجنة التنظيمية -->
+    <div class="committee">
+      <h4>اللجنة التنظيمية</h4>
+      <ul>
+        <li>
+          <a href="images/mansour.jpg" class="lightbox" title="أ/ منصور سعيد الرامي — مدير المرحلة الثانوية بالفلاح">
+            <img src="https://i.postimg.cc/HxnBppJR/images.png" alt="أ/ منصور سعيد الرامي">
+          </a>
+          أ/ منصور سعيد الرامي
+        </li>
+        <li>
+          <a href="images/hasan.jpg" class="lightbox" title="أ/ حسن القرني — مدير المرحلة الثانوية بالرحاب">
+            <img src="https://i.postimg.cc/HxnBppJR/images.png" alt="أ/ حسن القرني">
+          </a>
+          أ/ حسن القرني
+        </li>
+        <li>
+          <a href="images/mohamed_salah.jpg" class="lightbox" title="أ/ محمد صلاح إبراهيم — وكيل ثانوية الفيصلية بالفلاح">
+            <img src="https://i.postimg.cc/HxnBppJR/images.png" alt="أ/ محمد صلاح إبراهيم">
+          </a>
+          أ/ محمد صلاح إبراهيم
+        </li>
+        <li>
+          <a href="images/sadiq.jpg" class="lightbox" title="أ/ المهند صادق الحمودي — مشرف النشاط الطلابي بمدارس الفيصلية">
+            <img src="https://i.postimg.cc/HxnBppJR/images.png" alt="أ/ المهند صادق الحمودي">
+          </a>
+          أ/ المهند صادق الحمودي
+        </li>
+      </ul>
+    </div>
+
+  <!-- لجنة التجهيزات -->
+    <div class="committee">
+      <h4>لجنة التجهيزات</h4>
+      <ul>
+        <li>
+          <a href="images/mansour.jpg" class="lightbox" title="أ/ عبدالله صالح الزهراني">
+            <img src="https://i.postimg.cc/HxnBppJR/images.png" alt="أ/ عبدالله صالح الزهراني">
+          </a>
+          أ/ عبدالله صالح الزهراني
+        </li>
+        <li>
+          <a href="images/hasan.jpg" class="lightbox" title="أ/ نايف علي الغامدي">
+            <img src="https://i.postimg.cc/HxnBppJR/images.png" alt="أ/ نايف علي الغامدي">
+          </a>
+          أ/ نايف علي الغامدي
+        </li>
+        <li>
+          <a href="images/mohamed_salah.jpg" class="lightbox" title="أ/ فارس الحمراني">
+            <img src="https://i.postimg.cc/HxnBppJR/images.png" alt="أ/ فارس الحمراني">
+          </a>
+          أ/ فارس الحمراني
+        </li>
+        <li>
+          <a href="images/sadiq.jpg" class="lightbox" title="أ/ ماجد أحمد المالكي">
+            <img src="https://i.postimg.cc/HxnBppJR/images.png" alt="أ/ ماجد أحمد المالكي">
+          </a>
+          أ/ ماجد أحمد المالكي
+        </li>
+      </ul>
+    </div>
+
+  <!-- لجنة إعداد الأسئلة -->
+    <div class="committee">
+      <h4>لجنة إعداد الأسئلة</h4>
+      <ul>
+        <li>
+          <a href="images/mansour.jpg" class="lightbox" title="أ/ منصور سعيد الرامي — مدير المرحلة الثانوية بالفلاح">
+            <img src="https://i.postimg.cc/HxnBppJR/images.png" alt="أ/ منصور سعيد الرامي">
+          </a>
+          أ/ أيمن فؤاد فرحات
+        </li>
+        <li>
+          <a href="images/hasan.jpg" class="lightbox" title="أ/ حسن القرني — مدير المرحلة الثانوية بالرحاب">
+            <img src="https://i.postimg.cc/HxnBppJR/images.png" alt="أ/ حسن القرني">
+          </a>
+د/أنور أبو اليزيد حسن
+        </li>
+        <li>
+          <a href="images/mohamed_salah.jpg" class="lightbox" title="أ/ محمد صلاح إبراهيم — وكيل ثانوية الفيصلية بالفلاح">
+            <img src="https://i.postimg.cc/HxnBppJR/images.png" alt="أ/ محمد صلاح إبراهيم">
+          </a>
+          أ/ عبدع عبدالله بوكر
+        </li>
+        <li>
+          <a href="images/sadiq.jpg" class="lightbox" title="أ/ المهند صادق الحمودي — مشرف النشاط الطلابي بمدارس الفيصلية">
+            <img src="https://i.postimg.cc/J4s3t6zD/unnamed.jpg" alt="أ/ المهند صادق الحمودي">
+          </a>
+د/ مصطفى شحات نافع
+        </li>
+      </ul>
+    </div>
+
+  <!-- اللجنة التنظيمية -->
+    <div class="committee">
+      <h4>لجنة الاستقبال</h4>
+      <ul>
+        <li>
+          <a href="images/mansour.jpg" class="lightbox" title="أ/ منصور سعيد الرامي — مدير المرحلة الثانوية بالفلاح">
+            <img src="https://i.postimg.cc/HxnBppJR/images.png" alt="أ/ منصور سعيد الرامي">
+          </a>
+          أ/ محمد عبدالرحمن الغامدي
+        </li>
+        <li>
+          <a href="images/hasan.jpg" class="lightbox" title="أ/ حسن القرني — مدير المرحلة الثانوية بالرحاب">
+            <img src="https://i.postimg.cc/HxnBppJR/images.png" alt="أ/ حسن القرني">
+          </a>
+          أ/ محمد منادي القرشي
+        </li>
+        <li>
+          <a href="images/mohamed_salah.jpg" class="lightbox" title="أ/ محمد صلاح إبراهيم — وكيل ثانوية الفيصلية بالفلاح">
+            <img src="https://i.postimg.cc/HxnBppJR/images.png" alt="أ/ محمد صلاح إبراهيم">
+          </a>
+          أ/ عبدالله عمر القرشي
+        </li>
+        <li>
+          <a href="images/sadiq.jpg" class="lightbox" title="أ/ المهند صادق الحمودي — مشرف النشاط الطلابي بمدارس الفيصلية">
+            <img src="https://i.postimg.cc/HxnBppJR/images.png" alt="أ/ المهند صادق الحمودي">
+          </a>
+          أ/ رشدان فهد المطيري
+        </li>
+        <li>
+          <a href="images/sadiq.jpg" class="lightbox" title="أ/ المهند صادق الحمودي — مشرف النشاط الطلابي بمدارس الفيصلية">
+            <img src="https://i.postimg.cc/HxnBppJR/images.png" alt="أ/ المهند صادق الحمودي">
+          </a>
+          أ/ ثامر عواض العصيمي
+        </li>
+        <li>
+          <a href="images/sadiq.jpg" class="lightbox" title="أ/ المهند صادق الحمودي — مشرف النشاط الطلابي بمدارس الفيصلية">
+            <img src="https://i.postimg.cc/HxnBppJR/images.png" alt="أ/ المهند صادق الحمودي">
+          </a>
+          أ/ طلاب التطوع المدرسي
+        </li>
+      </ul>
+    </div>
+<!-- لجنة إعداد الأسئلة -->
+    <div class="committee">
+      <h4>لجنة التحكيم</h4>
+      <ul>
+        <li>
+          <a href="images/mansour.jpg" class="lightbox" title="أ/ منصور سعيد الرامي — مدير المرحلة الثانوية بالفلاح">
+            <img src="https://i.postimg.cc/HxnBppJR/images.png" alt="أ/ منصور سعيد الرامي">
+          </a>
+مدراء المراحل
+        </li>
+        <li>
+          <a href="images/hasan.jpg" class="lightbox" title="أ/ حسن القرني — مدير المرحلة الثانوية بالرحاب">
+            <img src="https://i.postimg.cc/HxnBppJR/images.png" alt="أ/ حسن القرني">
+          </a>
+واضعو الأسئلة
+              </li>
+      </ul>
+    </div>
+        <!-- لجنة إعداد الأسئلة -->
+    <div class="committee">
+      <h4>لجنة الإعلام</h4>
+      <ul>
+        <li>
+          <a href="images/mansour.jpg" class="lightbox" title="أ/ منصور سعيد الرامي — مدير المرحلة الثانوية بالفلاح">
+            <img src="https://i.postimg.cc/HxnBppJR/images.png" alt="أ/ منصور سعيد الرامي">
+          </a>
+          قسم الإعلام بالمدارس
+        </li>
+        <li>
+          <a href="images/hasan.jpg" class="lightbox" title="أ/ حسن القرني — مدير المرحلة الثانوية بالرحاب">
+            <img src="https://i.postimg.cc/HxnBppJR/images.png" alt="أ/ حسن القرني">
+          </a>
+رواد النشاط بالمرحلتين
+        </li>
+      </ul>
+    </div>
+
+
+
+    <!-- باقي اللجان بنفس الطريقة... -->
+  </div>
+
+  <div style="margin-top:10px" class="muted">
+    <span class="badge">الصف الثاني</span>
+    <span class="badge">الصف الثالث</span>
+    <span class="badge">مجمع الفلاح</span>
+    <span class="badge">مجمع الرحاب</span>
+  </div>
+</section>
+
+<style>
+.committee ul {
+  list-style: none;
+  padding: 0;
+}
+
+.committee li {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.committee li img {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-inline-end: 10px;
+  border: 2px solid var(--accent);
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.committee li img:hover {
+  transform: scale(1.1);
+}
+
+/* Lightbox effect */
+.lightbox-overlay {
+  position: fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background: rgba(0,0,0,0.8);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:1000;
+  display:none;
+}
+
+.lightbox-overlay img {
+  max-width: 90%;
+  max-height: 90%;
+  border-radius:10px;
+}
+</style>
+
+<script>
+// Lightbox functionality
+document.querySelectorAll('.lightbox').forEach(el => {
+  el.addEventListener('click', function(e){
+    e.preventDefault();
+    const overlay = document.createElement('div');
+    overlay.className = 'lightbox-overlay';
+    const img = document.createElement('img');
+    img.src = this.href;
+    overlay.appendChild(img);
+    document.body.appendChild(overlay);
+
+    overlay.addEventListener('click', () => {
+      document.body.removeChild(overlay);
+    });
+
+    overlay.style.display = 'flex';
+  });
+});
+</script>
+
+    <!-- الأحداث -->
+    <section id="events" class="card">
+      <h3 class="section-title">📅 الأحداث الحالية والقادمة وتأهل الفرق</h3>
+      <div class="grid-2">
+        <div class="card" style="padding:12px">
+          <h4 style="margin:0 0 8px 0">الأحداث القادمة</h4>
+          <div id="upcoming"></div>
+        </div>
+        <div class="card" style="padding:12px">
+          <h4 style="margin:0 0 8px 0">الأحداث الحالية</h4>
+          <div id="ongoing"></div>
+        </div>
+      </div>
+
+      <div class="card" style="padding:12px;margin-top:12px">
+        <h4 style="margin:0 0 8px 0">الفرق المتأهلة ( دور المجموعات)</h4>
+        <div id="qualified" class="grid-3"></div>
+      </div>
+    </section>
+
+    <!-- قسم إضافي اختياري: روابط سريعة / تواصل -->
+    <section class="card">
+      <h3 class="section-title">🔗 روابط سريعة</h3>
+      <div class="grid-3">
+        <a class="card" style="padding:12px;display:block;text-align:center" href="#" target="_blank">📄 لائحة المسابقة</a>
+        <a class="card" style="padding:12px;display:block;text-align:center" href="#" target="_blank">📝 نموذج التسجيل</a>
+        <a class="card" style="padding:12px;display:block;text-align:center" href="https://wa.me/9665XXXXXXXX" target="_blank">💬 تواصل مع منسق المسابقة</a>
+      </div>
+    </section>
+
+    <footer>
+شركة مدارس الفيصلية الأهلية بجدة   تم التصميم بواسطة© مصطفى نافع
+    </footer>
+  </div>
+
+  <script>
+    /* --------- العدّاد الزمني (عدّل التاريخ هنا) --------- */
+    // ❗️ غيّر تاريخ النهائي بالشكل: YYYY-MM-DDTHH:MM:SS
+    // مثال: 2025-11-15 05:00 مساءً بتوقيت السعودية ≈ "2025-11-15T17:00:00"
+    const targetDate = new Date("2025-11-15T17:00:00");
+
+    const elD = document.getElementById('dd');
+    const elH = document.getElementById('hh');
+    const elM = document.getElementById('mm');
+    const elS = document.getElementById('ss');
+
+    function updateCountdown(){
+      const now = new Date();
+      let diff = (targetDate - now) / 1000; // ثوانٍ
+      if (diff < 0) diff = 0;
+
+      const days = Math.floor(diff / 86400);
+      const hours = Math.floor((diff % 86400) / 3600);
+      const mins = Math.floor((diff % 3600) / 60);
+      const secs = Math.floor(diff % 60);
+
+      elD.textContent = String(days).padStart(2,'0');
+      elH.textContent = String(hours).padStart(2,'0');
+      elM.textContent = String(mins).padStart(2,'0');
+      elS.textContent = String(secs).padStart(2,'0');
+    }
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
+
+    /* --------- الأحداث والفرق (عدّلها بسهولة) --------- */
+    const upcomingEvents = [
+      { title:"اختبار موحد ورقي — تصفيات داخل الفروع", date:"الأحد 22 ربيع الأول 1447هـ", place:"مجمع الفلاح والرحاب", tags:["تصفيات","اختبار ورقي"] },
+      { title:"اختبار محوسب لاختيار أفضل الفصول", date:"الإثنين 30 ربيع الأول 1447هـ", place:"معمل الحاسب", tags:["محوسب","اختيار الفصول"] },
+      { title:"التصفيات الداخلية -تحكيم", date:"الأحد 6 جمادى الأولى 1447هـ", place:"قاعة الأنشطة", tags:["تصفيات","تحكيم"] },
+    ];
+
+    const ongoingEvents = [
+      { title:"معسكر تدريبي مكثف (اللفظي + الكمي)", date:"هذا الأسبوع", place:"القاعات الدراسية", tags:["تدريب","ورشة"] },
+    ];
+
+    const qualifiedTeams = [
+      { name:"❓", captain:"قائد: .......", tags:["صف ...","مجمع..."] },
+      { name:"❓", captain:"قائد: .......", tags:["صف ...","مجمع..."] },
+      { name:"❓", captain:"قائد: .......", tags:["صف ...","مجمع..."] },
+      { name:"❓", captain:"قائد: .......", tags:["صف ...","مجمع..."] },
+      { name:"❓", captain:"قائد: .......", tags:["صف ...","مجمع..."] },
+      { name:"❓", captain:"قائد: .......", tags:["صف ...","مجمع..."] },
+    ];
+
+    function renderEvents(list, mount){
+      if(!list.length){ mount.innerHTML = '<div class="muted">لا توجد أحداث.</div>'; return; }
+      mount.innerHTML = '';
+      list.forEach(ev=>{
+        const div = document.createElement('div');
+        div.className = 'event';
+        div.innerHTML = `
+          <div>
+            <div style="font-weight:700">${ev.title}</div>
+            <div class="meta">${ev.place}</div>
+          </div>
+          <div style="text-align:end">
+            <div class="meta">${ev.date}</div>
+            <div style="margin-top:6px">${(ev.tags||[]).map(t=>`<span class="tag">${t}</span>`).join(' ')}</div>
+          </div>
+        `;
+        mount.appendChild(div);
+      });
+    }
+
+    function renderQualified(list, mount){
+      mount.innerHTML = '';
+      list.forEach(team=>{
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.style.padding = '12px';
+        card.innerHTML = `
+          <div style="display:flex;justify-content:space-between;gap:8px;align-items:center">
+            <div>
+              <div style="font-weight:800">${team.name}</div>
+              <div class="muted" style="font-size:13px">${team.captain||''}</div>
+            </div>
+            <div>${(team.tags||[]).map(t=>`<span class="badge">${t}</span>`).join(' ')}</div>
+          </div>
+        `;
+        mount.appendChild(card);
+      });
+    }
+
+    renderEvents(upcomingEvents, document.getElementById('upcoming'));
+    renderEvents(ongoingEvents, document.getElementById('ongoing'));
+    renderQualified(qualifiedTeams, document.getElementById('qualified'));
+  </script>
+</body>
+</html>
